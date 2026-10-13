@@ -7,6 +7,7 @@
 		}"
 	>
 		<template #body-content>
+			<BranchAppsSection :site="site" @installed="$emit('installed')" />
 			<ObjectList :options="listOptions" />
 		</template>
 	</Dialog>
@@ -19,6 +20,7 @@ import { toast } from 'vue-sonner';
 import { renderDialog } from '../../utils/components';
 import router from '../../router';
 import ObjectList from '../ObjectList.vue';
+import BranchAppsSection from './BranchAppsSection.vue';
 import { getToastErrorMessage } from '../../utils/toast';
 
 export default {
@@ -31,6 +33,7 @@ export default {
 	emits: ['installed'],
 	components: {
 		ObjectList,
+		BranchAppsSection,
 	},
 	data() {
 		return {
