@@ -61,7 +61,7 @@ def _build_prompt(payload: dict[str, Any], report: dict[str, Any]) -> str:
 	next_steps = "\n".join(f"  - {s}" for s in (report.get("recommended_next_steps") or []))
 	payload_text = json.dumps(payload, indent=2, default=str)
 
-	return f"""You are a support engineer reviewing an automated investigation for a Frappe Cloud site.
+	return f"""You are a support engineer reviewing an automated investigation for a Mondaysys Cloud site.
 
 Deterministic analysis findings:
   Summary: {report.get("summary", "")}

@@ -24,7 +24,7 @@ def notify_partner_team(team: str, event: str) -> None:
 
 	The change can originate outside the team's own session — a Partner Manager
 	approving in Desk, or a certificate holder approving on the guest www page
-	(certificate holders are often not Frappe Cloud users). So we cannot rely on
+	(certificate holders are often not Mondaysys Cloud users). So we cannot rely on
 	frappe.session.user. Broadcasting to the site room ("all") would only reach
 	Desk users, but partners use the dashboard as Website users, so we must emit
 	to each member's user room explicitly for them to receive the update.
@@ -187,7 +187,7 @@ class CertificateLinkRequest(Document):
 
 		# The secret key is emailed only to the certificate holder and is
 		# consumed on first use, so possession of a valid key authorizes the
-		# approval. The holder need not be a Frappe Cloud user, so we must not
+		# approval. The holder need not be a Mondaysys Cloud user, so we must not
 		# require a matching logged-in session here.
 		doc.status = "Approved"
 		doc.save(ignore_permissions=True)

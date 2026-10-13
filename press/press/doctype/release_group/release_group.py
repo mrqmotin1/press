@@ -1226,7 +1226,7 @@ class ReleaseGroup(Document, TagHelpers):
 
 		if not frappe.db.exists("Team", {"user": team_mail_id, "enabled": 1}):
 			frappe.throw(
-				"We couldn't find an active team with that email. Please check the address and make sure the recipient has an active Frappe Cloud account."
+				"We couldn't find an active team with that email. Please check the address and make sure the recipient has an active Mondaysys Cloud account."
 			)
 
 		old_team = frappe.db.get_value("Team", self.team, "user")

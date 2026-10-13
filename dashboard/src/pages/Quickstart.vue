@@ -105,10 +105,10 @@ onMounted(() => {
 
 		<p class="mt-1 text-p-base text-ink-gray-5 mb-8">
 			{{ sites.length
-					? 'Select a site or continue to Frappe Cloud.'
+					? 'Select a site or continue to Mondaysys Cloud.'
 					: canCreateProductTrial
-						? 'Continue to Frappe Cloud or create a new trial site.'
-						: 'Continue to Frappe Cloud.' }}
+						? 'Continue to Mondaysys Cloud or create a new trial site.'
+						: 'Continue to Mondaysys Cloud.' }}
 		</p>
 
 		<template v-if="sitesResource.list.loading">

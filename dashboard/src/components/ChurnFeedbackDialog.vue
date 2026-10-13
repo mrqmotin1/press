@@ -41,7 +41,7 @@
 				class="mt-4"
 				type="textarea"
 				variant="outline"
-				placeholder="I am leaving Frappe Cloud because..."
+				placeholder="I am leaving Mondaysys Cloud because..."
 				size="md"
 				v-model="note"
 			/>
@@ -118,13 +118,13 @@ export default {
 	computed: {
 		options() {
 			return [
-				'Frappe Cloud is complex and difficult to use',
-				'Unable to migrate to Frappe Cloud',
+				'Mondaysys Cloud is complex and difficult to use',
+				'Unable to migrate to Mondaysys Cloud',
 				'I prefer self-hosting my instance',
 				'Poor partner experience',
 				'Missing Country Compliance App',
-				'Moved site to another Frappe Cloud account',
-				'Frappe Cloud is too expensive for me',
+				'Moved site to another Mondaysys Cloud account',
+				'Mondaysys Cloud is too expensive for me',
 				'Missing Integration App',
 				'Apps are too complex to use and setup',
 				'Payment issues',

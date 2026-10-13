@@ -1,6 +1,6 @@
 # Copyright (c) 2024, Frappe and contributors
 # For license information, please see license.txt
-"""Frappe Cloud documentation URLs for user-facing error messages.
+"""Mondaysys Cloud documentation URLs for user-facing error messages.
 
 A good error explains what happened, tells the user how to fix it, and — when
 a relevant guide exists — links to the documentation so the user can self-serve.

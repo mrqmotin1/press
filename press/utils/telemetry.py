@@ -139,7 +139,7 @@ def _current_team() -> str | None:
 def pulse_identify(team: str | None = None, properties: dict | None = None):
 	"""Attach attributes to a team (upsert its Pulse profile).
 
-	The identity subject is the Frappe Cloud team — stable across the account's
+	The identity subject is the Mondaysys Cloud team — stable across the account's
 	sites, apps, and members. `team` defaults to the current dashboard team; the one
 	caller that must pass it is signup, where the team was just created and there is
 	no ambient team yet.

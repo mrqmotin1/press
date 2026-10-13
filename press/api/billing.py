@@ -871,8 +871,8 @@ def create_razorpay_order(amount, transaction_type, doc_name=None) -> dict | Non
 		"amount": int(amount * 100),
 		"currency": team.currency,
 		"notes": {
-			"Description": "Order for Frappe Cloud Prepaid Credits",
-			"Team (Frappe Cloud ID)": team.name,
+			"Description": "Order for Mondaysys Cloud Prepaid Credits",
+			"Team (Mondaysys Cloud ID)": team.name,
 			"gst": gst_amount,
 			"Type": payment_record_type,
 		},
@@ -1071,7 +1071,7 @@ def generate_stk_push(**kwargs):
 			callback_url=callback_url,
 			reference_code=mpesa_setup.till_number,
 			phone_number=mobile_number,
-			description="Frappe Cloud Payment",
+			description="Mondaysys Cloud Payment",
 		)
 		return response  # noqa: RET504
 

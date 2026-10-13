@@ -149,7 +149,7 @@ const helpDropdownOptions = [
 							:class="collapsedCss"
 						>
 							<div class="text-base font-medium hidden md:flex text-ink-gray-9">
-								Frappe Cloud
+								Mondaysys Cloud
 							</div>
 
 							<div class="text-sm text-left text-ink-gray-7 truncate">

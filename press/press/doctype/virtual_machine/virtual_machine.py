@@ -245,7 +245,7 @@ class VirtualMachine(Document):
 
 		if self.cloud_provider != "AWS EC2":
 			frappe.throw(
-				"Frappe Cloud allows Data disk snapshots for servers provided by AWS Only. Any other regions like OCI and Hetzner do not have Data disk snapshots."
+				"Mondaysys Cloud allows Data disk snapshots for servers provided by AWS Only. Any other regions like OCI and Hetzner do not have Data disk snapshots."
 			)
 
 		# Ensure the disk snapshot is Completed
@@ -764,7 +764,7 @@ class VirtualMachine(Document):
 			"TagSpecifications": [
 				{
 					"ResourceType": "instance",
-					"Tags": [{"Key": "Name", "Value": f"Frappe Cloud - {self.name}"}],
+					"Tags": [{"Key": "Name", "Value": f"Mondaysys Cloud - {self.name}"}],
 				},
 			],
 			"UserData": self.get_cloud_init() if self.virtual_machine_image else "",
@@ -2055,12 +2055,12 @@ class VirtualMachine(Document):
 
 		response = self.client().create_snapshots(
 			InstanceSpecification=instance_specification,
-			Description=f"Frappe Cloud - {self.name} - {frappe.utils.now()}",
+			Description=f"Mondaysys Cloud - {self.name} - {frappe.utils.now()}",
 			TagSpecifications=[
 				{
 					"ResourceType": "snapshot",
 					"Tags": [
-						{"Key": "Name", "Value": f"Frappe Cloud - {self.name} - {frappe.utils.now()}"},
+						{"Key": "Name", "Value": f"Mondaysys Cloud - {self.name} - {frappe.utils.now()}"},
 						{"Key": "Physical Backup", "Value": "Yes" if physical_backup else "No"},
 						{"Key": "Rolling Snapshot", "Value": "Yes" if rolling_snapshot else "No"},
 						{"Key": "Dedicated Snapshot", "Value": "Yes" if dedicated_snapshot else "No"},
@@ -2096,7 +2096,7 @@ class VirtualMachine(Document):
 							CreateBootVolumeBackupDetails(
 								boot_volume_id=volume.volume_id,
 								type="INCREMENTAL",
-								display_name=f"Frappe Cloud - {self.name} - {volume.name} - {frappe.utils.now()}",
+								display_name=f"Mondaysys Cloud - {self.name} - {volume.name} - {frappe.utils.now()}",
 							)
 						)
 						.data
@@ -2108,7 +2108,7 @@ class VirtualMachine(Document):
 							CreateVolumeBackupDetails(
 								volume_id=volume.volume_id,
 								type="INCREMENTAL",
-								display_name=f"Frappe Cloud - {self.name} - {volume.name} - {frappe.utils.now()}",
+								display_name=f"Mondaysys Cloud - {self.name} - {volume.name} - {frappe.utils.now()}",
 							)
 						)
 						.data
@@ -2131,7 +2131,7 @@ class VirtualMachine(Document):
 	def _create_snapshots_hetzner(self):
 		server = self.get_hetzner_server_instance(fetch_data=True)
 		response = server.create_image(
-			type="snapshot", description=f"Frappe Cloud - {self.name} - {frappe.utils.now()}"
+			type="snapshot", description=f"Mondaysys Cloud - {self.name} - {frappe.utils.now()}"
 		)
 
 		doc = frappe.get_doc(
@@ -3045,7 +3045,7 @@ class VirtualMachine(Document):
 			"TagSpecifications": [
 				{
 					"ResourceType": "volume",
-					"Tags": [{"Key": "Name", "Value": f"Frappe Cloud - {self.name}"}],
+					"Tags": [{"Key": "Name", "Value": f"Mondaysys Cloud - {self.name}"}],
 				},
 			],
 		}

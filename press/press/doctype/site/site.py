@@ -494,7 +494,7 @@ class Site(Document, TagHelpers):
 
 		return {
 			# every scheduled archival runs as Administrator, which means nothing to a customer
-			"archived_by": "Frappe Cloud" if activity.owner == "Administrator" else activity.owner,
+			"archived_by": "Mondaysys Cloud" if activity.owner == "Administrator" else activity.owner,
 			"archived_on": activity.creation,
 			"reason": activity.reason,
 		}
@@ -2585,16 +2585,16 @@ class Site(Document, TagHelpers):
 
 		webhook_data = [
 			{
-				"name": "Sync User records with Frappe Cloud on create",
+				"name": "Sync User records with Mondaysys Cloud on create",
 				"webhook_docevent": "after_insert",
 			},
 			{
-				"name": "Sync User records with Frappe Cloud on update",
+				"name": "Sync User records with Mondaysys Cloud on update",
 				"webhook_docevent": "on_update",
 				"condition": """doc.has_value_changed("enabled")""",
 			},
 			{
-				"name": "Sync User records with Frappe Cloud on delete",
+				"name": "Sync User records with Mondaysys Cloud on delete",
 				"webhook_docevent": "on_trash",
 			},
 		]
@@ -2796,7 +2796,7 @@ class Site(Document, TagHelpers):
 	def disallow_developer_mode(self, key: str):
 		if key == "developer_mode":
 			frappe.throw(
-				"You shouldn't enable developer mode on Frappe Cloud as your changes won't persist. Consider using a custom app instead. Read more <a href='https://docs.frappe.io/cloud/sites/site-config#why-cant-i-enable-developer-mode' class='underline' target='_blank'>here</a>."
+				"You shouldn't enable developer mode on Mondaysys Cloud as your changes won't persist. Consider using a custom app instead. Read more <a href='https://docs.frappe.io/cloud/sites/site-config#why-cant-i-enable-developer-mode' class='underline' target='_blank'>here</a>."
 			)
 
 	@dashboard_whitelist()

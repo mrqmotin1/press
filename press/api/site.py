@@ -2229,7 +2229,7 @@ def validate_restoration_space_requirements(
 
 	if server.public:
 		"""
-        If it's a public server, Frappe Cloud will auto extend the disk space
+        If it's a public server, Mondaysys Cloud will auto extend the disk space
         to accommodate the restoration.
         """
 		allowed_to_upload = True

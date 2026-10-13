@@ -823,7 +823,7 @@ def get_partner_teams(
 ) -> list[dict] | None:
 	if not is_system_user(frappe.session.user):
 		frappe.throw(
-			"Only Frappe Cloud system users can access partner teams. Please contact the partnership team if you need access."
+			"Only Mondaysys Cloud system users can access partner teams. Please contact the partnership team if you need access."
 		)
 
 	filters: dict[str, Any] = {"enabled": 1, "erpnext_partner": 1}
@@ -928,7 +928,7 @@ def update_lead_status(lead_name: str, status: str, **kwargs: str) -> None:  # n
 			result = query.run(as_dict=True)
 			if not result:
 				frappe.throw(
-					"We couldn't find an active server with that name on Frappe Cloud. Please check the server name and try again."
+					"We couldn't find an active server with that name on Mondaysys Cloud. Please check the server name and try again."
 				)
 
 			amount = calculate_total_amount(result[0].name)
@@ -937,7 +937,7 @@ def update_lead_status(lead_name: str, status: str, **kwargs: str) -> None:  # n
 			team_id = frappe.db.exists("Team", {"user": team, "enabled": 1})
 			if not team_id:
 				frappe.throw(
-					"We couldn't find an active team with that email on Frappe Cloud. Please check the team's email address and try again."
+					"We couldn't find an active team with that email on Mondaysys Cloud. Please check the team's email address and try again."
 				)
 			else:
 				amount = calculate_total_team_amount(team_id)
@@ -952,7 +952,7 @@ def update_lead_status(lead_name: str, status: str, **kwargs: str) -> None:  # n
 			result = query.run(as_dict=True)
 			if not result:
 				frappe.throw(
-					"We couldn't find an active site with that name on Frappe Cloud. Please check the site URL and try again."
+					"We couldn't find an active site with that name on Mondaysys Cloud. Please check the site URL and try again."
 				)
 
 			SitePlan = frappe.qb.DocType("Site Plan")
@@ -969,7 +969,7 @@ def update_lead_status(lead_name: str, status: str, **kwargs: str) -> None:  # n
 		status_dict.update(
 			{
 				"conversion_date": frappe.utils.getdate(),
-				"hosting": "Frappe Cloud",
+				"hosting": "Mondaysys Cloud",
 				"site_url": site,
 				"server_name": server,
 				"team_name": team,

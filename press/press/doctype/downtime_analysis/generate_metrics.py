@@ -565,7 +565,7 @@ def analyze_sites(sites: list):
 			"status_code": 0,
 			"redirects": [],
 			"error": "",
-			"proxy_server": "",  # Frappe Cloud, cloudflare
+			"proxy_server": "",  # Mondaysys Cloud, cloudflare
 		}
 		try:
 			# Check if sites are reachable

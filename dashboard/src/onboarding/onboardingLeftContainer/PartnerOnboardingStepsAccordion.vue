@@ -162,7 +162,7 @@ const steps = computed(() => [
 	},
 	{
 		value: 'step-mrr',
-		title: `Reach ${mrrTargetLabel.value} MRR on Frappe Cloud`,
+		title: `Reach ${mrrTargetLabel.value} MRR on Mondaysys Cloud`,
 		required: true,
 		status: onboarding.isMRRRequirementComplete.value ? 'completed' : 'pending',
 		description:

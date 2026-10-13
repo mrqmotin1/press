@@ -1643,7 +1643,7 @@ class BaseServer(Document, TagHelpers):
 
 		if not (team.default_payment_method or team.get_balance()):
 			frappe.throw(
-				"Cannot change plan: please add a card or prepaid credits to your billing account on Frappe Cloud."
+				"Cannot change plan: please add a card or prepaid credits to your billing account on Mondaysys Cloud."
 			)
 
 		if is_limits_exceeded(new_plan.price_usd):

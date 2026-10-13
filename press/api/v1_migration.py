@@ -1,6 +1,6 @@
 # Copyright (c) 2026, Frappe and contributors
 # For license information, please see license.txt
-"""Lets Pilot copy the backups of a Frappe Cloud site after its team approves."""
+"""Lets Pilot copy the backups of a Mondaysys Cloud site after its team approves."""
 
 from __future__ import annotations
 

@@ -299,7 +299,7 @@ class Cluster(Document):
 			network = client.vpcs.create(
 				{
 					"name": f"Frappe - Cloud - {self.name}".replace(" ", ""),
-					"description": f"VPC for Frappe Cloud {self.name} Cluster",
+					"description": f"VPC for Mondaysys Cloud {self.name} Cluster",
 					"region": self.region,
 					"ip_range": self.cidr_block,
 				}
@@ -329,7 +329,7 @@ class Cluster(Document):
 		existing_firewalls = [
 			fw
 			for fw in firewalls
-			if fw["name"] == f"Frappe Cloud - {self.name} - Proxy - Security Group".replace(" ", "")
+			if fw["name"] == f"Mondaysys Cloud - {self.name} - Proxy - Security Group".replace(" ", "")
 		]
 		if existing_firewalls:
 			self.proxy_security_group_id = existing_firewalls[0]["id"]
@@ -338,7 +338,7 @@ class Cluster(Document):
 		try:
 			firewall = client.firewalls.create(
 				{
-					"name": f"Frappe Cloud - {self.name} - Proxy - Security Group".replace(" ", ""),
+					"name": f"Mondaysys Cloud - {self.name} - Proxy - Security Group".replace(" ", ""),
 					"inbound_rules": [
 						{"protocol": "tcp", "ports": "2222", "sources": {"addresses": ["0.0.0.0/0"]}},
 						{"protocol": "tcp", "ports": "3306", "sources": {"addresses": ["0.0.0.0/0"]}},
@@ -360,7 +360,7 @@ class Cluster(Document):
 		firewalls = client.firewalls.list()
 		firewalls = firewalls.get("firewalls", [])
 
-		firewall_name = f"Frappe Cloud - {self.name} - NAT - Security Group".replace(" ", "")
+		firewall_name = f"Mondaysys Cloud - {self.name} - NAT - Security Group".replace(" ", "")
 
 		existing_firewalls = [fw for fw in firewalls if fw["name"] == firewall_name]
 
@@ -421,7 +421,7 @@ class Cluster(Document):
 		existing_firewalls = [
 			fw
 			for fw in firewalls
-			if fw["name"] == f"Frappe Cloud - {self.name} - Security Group".replace(" ", "")
+			if fw["name"] == f"Mondaysys Cloud - {self.name} - Security Group".replace(" ", "")
 		]
 		if existing_firewalls:
 			self.security_group_id = existing_firewalls[0]["id"]
@@ -430,7 +430,7 @@ class Cluster(Document):
 		try:
 			firewall = client.firewalls.create(
 				{
-					"name": f"Frappe Cloud - {self.name} - Security Group".replace(" ", ""),
+					"name": f"Mondaysys Cloud - {self.name} - Security Group".replace(" ", ""),
 					"inbound_rules": [
 						{"protocol": "tcp", "ports": "80", "sources": {"addresses": ["0.0.0.0/0"]}},
 						{"protocol": "tcp", "ports": "443", "sources": {"addresses": ["0.0.0.0/0"]}},
@@ -519,7 +519,7 @@ class Cluster(Document):
 
 			# Create the network (VPC) on Hetzner
 			network = client.networks.create(
-				name=f"Frappe Cloud - {self.name}",
+				name=f"Mondaysys Cloud - {self.name}",
 				ip_range=self.cidr_block,  # The IP range for the entire network (CIDR)
 				subnets=[
 					NetworkSubnet(
@@ -550,7 +550,7 @@ class Cluster(Document):
 		try:
 			# Create Server Firewall
 			server_firewall = client.firewalls.create(
-				name=f"Frappe Cloud - {self.name} - Security Group",
+				name=f"Mondaysys Cloud - {self.name} - Security Group",
 				rules=[
 					HetznerFirewallRule(
 						description="HTTP from anywhere",
@@ -618,7 +618,7 @@ class Cluster(Document):
 		try:
 			# Create Proxy Server Firewall
 			proxy_firewall = client.firewalls.create(
-				f"Frappe Cloud - {self.name} - Proxy - Security Group",
+				f"Mondaysys Cloud - {self.name} - Proxy - Security Group",
 				rules=[
 					HetznerFirewallRule(
 						description="SSH proxy from anywhere",
@@ -704,7 +704,7 @@ class Cluster(Document):
 			TagSpecifications=[
 				{
 					"ResourceType": "vpc",
-					"Tags": [{"Key": "Name", "Value": f"Frappe Cloud - {self.name}"}],
+					"Tags": [{"Key": "Name", "Value": f"Mondaysys Cloud - {self.name}"}],
 				},
 			],
 			CidrBlock=self.cidr_block,
@@ -720,7 +720,7 @@ class Cluster(Document):
 					"Tags": [
 						{
 							"Key": "Name",
-							"Value": f"Frappe Cloud - {self.name} - Public Subnet",
+							"Value": f"Mondaysys Cloud - {self.name} - Public Subnet",
 						}
 					],
 				},
@@ -738,7 +738,7 @@ class Cluster(Document):
 					"Tags": [
 						{
 							"Key": "Name",
-							"Value": f"Frappe Cloud - {self.name} - Internet Gateway",
+							"Value": f"Mondaysys Cloud - {self.name} - Internet Gateway",
 						},
 					],
 				},
@@ -762,7 +762,7 @@ class Cluster(Document):
 
 		client.create_tags(
 			Resources=[self.route_table_id],
-			Tags=[{"Key": "Name", "Value": f"Frappe Cloud - {self.name} - Route Table"}],
+			Tags=[{"Key": "Name", "Value": f"Mondaysys Cloud - {self.name} - Route Table"}],
 		)
 
 		response = client.describe_network_acls(
@@ -771,11 +771,11 @@ class Cluster(Document):
 		self.network_acl_id = response["NetworkAcls"][0]["NetworkAclId"]
 		client.create_tags(
 			Resources=[self.network_acl_id],
-			Tags=[{"Key": "Name", "Value": f"Frappe Cloud - {self.name} - Network ACL"}],
+			Tags=[{"Key": "Name", "Value": f"Mondaysys Cloud - {self.name} - Network ACL"}],
 		)
 
 		response = client.create_security_group(
-			GroupName=f"Frappe Cloud - {self.name} - Security Group",
+			GroupName=f"Mondaysys Cloud - {self.name} - Security Group",
 			Description="Allow Everything",
 			VpcId=self.vpc_id,
 			TagSpecifications=[
@@ -784,7 +784,7 @@ class Cluster(Document):
 					"Tags": [
 						{
 							"Key": "Name",
-							"Value": f"Frappe Cloud - {self.name} - Security Group",
+							"Value": f"Mondaysys Cloud - {self.name} - Security Group",
 						},
 					],
 				},
@@ -887,7 +887,7 @@ class Cluster(Document):
 	def create_proxy_security_group(self):
 		client = self.get_aws_client()
 		response = client.create_security_group(
-			GroupName=f"Frappe Cloud - {self.name} - Proxy - Security Group",
+			GroupName=f"Mondaysys Cloud - {self.name} - Proxy - Security Group",
 			Description="Allow Everything on Proxy",
 			VpcId=self.vpc_id,
 			TagSpecifications=[
@@ -896,7 +896,7 @@ class Cluster(Document):
 					"Tags": [
 						{
 							"Key": "Name",
-							"Value": f"Frappe Cloud - {self.name} - Proxy - Security Group",
+							"Value": f"Mondaysys Cloud - {self.name} - Proxy - Security Group",
 						},
 					],
 				},
@@ -941,7 +941,7 @@ class Cluster(Document):
 
 		try:
 			response = client.firewalls.create(
-				name=f"Frappe Cloud - {self.name} - NAT - Security Group",
+				name=f"Mondaysys Cloud - {self.name} - NAT - Security Group",
 				rules=[
 					HetznerFirewallRule(
 						description="Allow TCP from private network",
@@ -991,7 +991,7 @@ class Cluster(Document):
 		nat_security_group = vcn_client.create_network_security_group(
 			CreateNetworkSecurityGroupDetails(
 				compartment_id=self.oci_tenancy,
-				display_name=f"Frappe Cloud - {self.name} - NAT - Security Group",
+				display_name=f"Mondaysys Cloud - {self.name} - NAT - Security Group",
 				vcn_id=self.vpc_id,
 			)
 		).data
@@ -1049,7 +1049,7 @@ class Cluster(Document):
 			CreateRouteTableDetails(
 				compartment_id=self.oci_tenancy,
 				vcn_id=self.vpc_id,
-				display_name=f"Frappe Cloud - {self.name} - NAT Route Table",
+				display_name=f"Mondaysys Cloud - {self.name} - NAT Route Table",
 				route_rules=[
 					RouteRule(
 						destination="0.0.0.0/0",
@@ -1098,7 +1098,7 @@ class Cluster(Document):
 	def create_nat_security_group(self):
 		client = self.get_aws_client()
 		response = client.create_security_group(
-			GroupName=f"Frappe Cloud - {self.name} - NAT - Security Group",
+			GroupName=f"Mondaysys Cloud - {self.name} - NAT - Security Group",
 			Description="Allow Inbound Traffic on NAT",
 			VpcId=self.vpc_id,
 			TagSpecifications=[
@@ -1107,7 +1107,7 @@ class Cluster(Document):
 					"Tags": [
 						{
 							"Key": "Name",
-							"Value": f"Frappe Cloud - {self.name} - NAT - Security Group",
+							"Value": f"Mondaysys Cloud - {self.name} - NAT - Security Group",
 						},
 					],
 				},
@@ -1166,7 +1166,7 @@ class Cluster(Document):
 		vcn = vcn_client.create_vcn(
 			CreateVcnDetails(
 				compartment_id=self.oci_tenancy,
-				display_name=f"Frappe Cloud - {self.name}",
+				display_name=f"Mondaysys Cloud - {self.name}",
 				cidr_block=self.subnet_cidr_block,
 			)
 		).data
@@ -1182,7 +1182,7 @@ class Cluster(Document):
 		security_group = vcn_client.create_network_security_group(
 			CreateNetworkSecurityGroupDetails(
 				compartment_id=self.oci_tenancy,
-				display_name=f"Frappe Cloud - {self.name} - Security Group",
+				display_name=f"Mondaysys Cloud - {self.name} - Security Group",
 				vcn_id=self.vpc_id,
 			)
 		).data
@@ -1249,7 +1249,7 @@ class Cluster(Document):
 		proxy_security_group = vcn_client.create_network_security_group(
 			CreateNetworkSecurityGroupDetails(
 				compartment_id=self.oci_tenancy,
-				display_name=f"Frappe Cloud - {self.name} - Proxy - Security Group",
+				display_name=f"Mondaysys Cloud - {self.name} - Proxy - Security Group",
 				vcn_id=self.vpc_id,
 			)
 		).data
@@ -1300,7 +1300,7 @@ class Cluster(Document):
 		subnet = vcn_client.create_subnet(
 			CreateSubnetDetails(
 				compartment_id=self.oci_tenancy,
-				display_name=f"Frappe Cloud - {self.name} - Public Subnet",
+				display_name=f"Mondaysys Cloud - {self.name} - Public Subnet",
 				vcn_id=self.vpc_id,
 				cidr_block=self.subnet_cidr_block,
 				route_table_id=self.route_table_id,
@@ -1314,7 +1314,7 @@ class Cluster(Document):
 		internet_gateway = vcn_client.create_internet_gateway(
 			CreateInternetGatewayDetails(
 				compartment_id=self.oci_tenancy,
-				display_name=f"Frappe Cloud - {self.name} - Internet Gateway",
+				display_name=f"Mondaysys Cloud - {self.name} - Internet Gateway",
 				is_enabled=True,
 				vcn_id=self.vpc_id,
 			)
@@ -1440,7 +1440,7 @@ class Cluster(Document):
 			TagSpecifications=[
 				{
 					"ResourceType": "vpc-flow-log",
-					"Tags": [{"Key": "Name", "Value": f"Frappe Cloud - {self.name} - Flow Logs"}],
+					"Tags": [{"Key": "Name", "Value": f"Mondaysys Cloud - {self.name} - Flow Logs"}],
 				},
 			],
 		)
@@ -1842,7 +1842,7 @@ class Cluster(Document):
 
 	def create_aws_firewall(self, rules: list[tuple[str | int, str]], is_ingress: bool, description: str):
 		client = self.get_aws_client()
-		sg_name = f"Frappe Cloud - {self.name} - Custom - {frappe.generate_hash(length=4)}"
+		sg_name = f"Mondaysys Cloud - {self.name} - Custom - {frappe.generate_hash(length=4)}"
 		response = client.create_security_group(
 			GroupName=sg_name,
 			Description=description or "Custom Security Group",
@@ -1886,7 +1886,7 @@ class Cluster(Document):
 			firewall_rules.append(HetznerFirewallRule(**rule_params))
 
 		firewall_response = client.firewalls.create(
-			name=f"Frappe Cloud - {self.name} - Custom - {frappe.generate_hash(length=4)}",
+			name=f"Mondaysys Cloud - {self.name} - Custom - {frappe.generate_hash(length=4)}",
 			rules=firewall_rules,
 		)
 		return firewall_response.firewall.id
@@ -1896,7 +1896,7 @@ class Cluster(Document):
 		security_group = vcn_client.create_network_security_group(
 			CreateNetworkSecurityGroupDetails(
 				compartment_id=self.oci_tenancy,
-				display_name=f"Frappe Cloud - {self.name} - Custom - {frappe.generate_hash(length=4)}",
+				display_name=f"Mondaysys Cloud - {self.name} - Custom - {frappe.generate_hash(length=4)}",
 				vcn_id=self.vpc_id,
 			)
 		).data

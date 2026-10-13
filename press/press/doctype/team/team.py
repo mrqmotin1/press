@@ -1695,7 +1695,7 @@ class Team(Document):
 			invoice = frappe.get_doc("Invoice", invoice)
 
 		email = get_communication_info("Email", "Billing", "Team", self.name) or [self.user]
-		subject = "UPI Autopay Payment Failed for Frappe Cloud Subscription"
+		subject = "UPI Autopay Payment Failed for Mondaysys Cloud Subscription"
 
 		frappe.sendmail(
 			recipients=email,
@@ -1731,7 +1731,7 @@ class Team(Document):
 			invoice = frappe.get_doc("Invoice", invoice)
 
 		email = get_communication_info("Email", "Billing", "Team", self.name) or [self.user]
-		subject = "Card on Frappe Cloud could not be charged"
+		subject = "Card on Mondaysys Cloud could not be charged"
 
 		frappe.sendmail(
 			recipients=email,
@@ -1751,7 +1751,7 @@ class Team(Document):
 		payment_method = self.default_payment_method
 		last_4 = frappe.db.get_value("Stripe Payment Method", payment_method, "last_4")
 		account_update_link = frappe.utils.get_url("/dashboard")
-		subject = "Invoice Payment Failed for Frappe Cloud Subscription"
+		subject = "Invoice Payment Failed for Mondaysys Cloud Subscription"
 
 		frappe.sendmail(
 			recipients=email,
@@ -2142,7 +2142,7 @@ def send_budget_alert_email(team_info, invoice):
 		alert_threshold = f"{currency}{team_info['monthly_alert_threshold']}"
 		excess_amount = f"{currency}{round(invoice['total'] - team_info['monthly_alert_threshold'], 2)}"
 
-		subject = f"Frappe Cloud Budget Alert for {team_user}"
+		subject = f"Mondaysys Cloud Budget Alert for {team_user}"
 
 		frappe.sendmail(
 			recipients=team_user,

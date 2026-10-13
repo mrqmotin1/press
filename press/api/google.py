@@ -135,7 +135,7 @@ def callback(code: str | None = None, state: str | None = None):  # noqa: C901
 
 def invalid_login():
 	frappe.local.response["http_status_code"] = 401
-	return "Invalid state parameter. The session timed out. Please try again or contact  Frappe Cloud support at https://frappecloud.com/support"
+	return "Invalid state parameter. The session timed out. Please try again or contact  Mondaysys Cloud support at https://frappecloud.com/support"
 
 
 def google_oauth_flow():

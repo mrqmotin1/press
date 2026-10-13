@@ -174,7 +174,7 @@ class PressWebhook(Document):
 
 		frappe.sendmail(
 			recipients=email,
-			subject="Important: Your Configured Webhook on Frappe Cloud is disabled",
+			subject="Important: Your Configured Webhook on Mondaysys Cloud is disabled",
 			template="press_webhook_disabled",
 			args={"endpoint": self.endpoint},
 			now=True,
