@@ -42,6 +42,7 @@ let router = createRouter({
 		{
 			path: '/signup',
 			name: 'Signup',
+			redirect: { name: 'Login' }, // self-signup disabled
 			component: () => import('./pages/LoginSignup.vue'),
 			meta: { isLoginPage: true, title: 'Sign Up' },
 		},

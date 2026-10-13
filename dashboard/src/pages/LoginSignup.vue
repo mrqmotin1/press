@@ -34,7 +34,7 @@
 									Continue with verification code
 								</Button>
 								<Button
-									:loading="$resources.googleLogin.loading"
+									v-if="false" :loading="$resources.googleLogin.loading"
 									@click="continueWithGoogle"
 								>
 									<div class="flex items-center">
@@ -312,7 +312,7 @@
 									Terms & Policies
 								</a>
 							</div>
-							<div class="mt-2" v-if="!(otpRequested || resetPasswordEmailSent)">
+							<div v-if="false">
 								<span class="text-p-base text-ink-gray-6">
 									{{
 										$route.name == 'Login'
@@ -395,7 +395,7 @@
 									Terms & Policies
 								</a>
 							</div>
-							<div>
+							<div v-if="false">
 								<span class="text-base font-normal text-ink-gray-6">
 									{{
 										$route.name == 'Login'
