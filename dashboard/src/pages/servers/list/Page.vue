@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { Button, createListResource, TextInput, Combobox } from 'frappe-ui'
 import Header from '@/components/Header.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { getTeam } from '@/data/team'
 
 import ServerCard from './ServerCard.vue'
 import Loader from './Loader.vue'
+
+// MondayPOS: staff-only shortcut to the Hostinger server registration form (mondaypos_press)
+const isDeskUser = computed(() => Boolean(getTeam()?.doc?.is_desk_user))
 
 const sortBy = ref('desc')
 
@@ -79,6 +83,14 @@ const toggleSort = () => {
 			<template #icon>
 				<lucide-refresh-ccw class="size-4" />
 			</template>
+		</Button>
+
+		<Button
+			v-if="isDeskUser"
+			class="mr-2"
+			link="/app/hostinger-server-registration/new"
+		>
+			Register Hostinger Server
 		</Button>
 
 		<Button :route="{ name: 'New Server' }" variant="solid">
