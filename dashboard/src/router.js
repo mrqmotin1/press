@@ -779,4 +779,37 @@ function logoutWithTeamError() {
 	router.push({ name: 'Login', query: { reason: 'INVALID_TEAM' } })
 }
 
+
+// MondayPOS: after a dashboard deploy the old lazy-loaded chunks are gone, so a tab that was
+// open before the deploy fails to navigate (e.g. after "Create site"). Reload once into the
+// target page to pick up the new build; the session flag prevents reload loops.
+const CHUNK_RELOAD_KEY = 'press-dashboard-chunk-reload'
+const isChunkLoadError = (error) =>
+	/dynamically imported module|Importing a module script failed|Failed to fetch|error loading dynamically/i.test(
+		String(error?.message || error),
+	)
+function reloadOnce(href) {
+	try {
+		if (sessionStorage.getItem(CHUNK_RELOAD_KEY)) return false
+		sessionStorage.setItem(CHUNK_RELOAD_KEY, '1')
+	} catch (e) {
+		// storage unavailable: still reload
+	}
+	window.location.assign(href || window.location.href)
+	return true
+}
+router.onError((error, to) => {
+	if (isChunkLoadError(error)) reloadOnce(to ? router.resolve(to).href : undefined)
+})
+window.addEventListener('vite:preloadError', (event) => {
+	if (reloadOnce()) event.preventDefault()
+})
+router.isReady().then(() =>
+	setTimeout(() => {
+		try {
+			sessionStorage.removeItem(CHUNK_RELOAD_KEY)
+		} catch (e) {}
+	}, 10000),
+)
+
 export default router
