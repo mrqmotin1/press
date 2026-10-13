@@ -37,7 +37,7 @@ const canCreateProductTrial = computed(
 
 const productTrialName = computed(() => {
 	const name = productTrial.data?.product_trial?.title || product
-	return /frappe/i.test(name) ? name : `Frappe ${name}`
+	return /frappe/i.test(name) ? name : `Mondaysys ${name}`
 })
 
 const sitePlan = (site) =>

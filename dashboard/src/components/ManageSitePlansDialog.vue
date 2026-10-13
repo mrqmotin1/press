@@ -47,8 +47,8 @@
 					>
 						<lucide-badge-check class="mr-2 h-5 w-12 text-ink-gray-6" />
 						<span>
-							<strong>Support</strong> covers only issues of Frappe apps and not
-							functional queries. You can raise a support ticket for Frappe
+							<strong>Support</strong> covers only issues of Mondaysys apps and not
+							functional queries. You can raise a support ticket for Mondaysys
 							Cloud issues for all plans.
 						</span>
 					</div>

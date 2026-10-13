@@ -974,10 +974,10 @@ export default {
 			if (this.hasForgotPassword) {
 				return 'Enter your email address to reset your password';
 			} else if (this.isLogin) {
-				return 'Get started and explore the easiest way to use all Frappe apps';
+				return 'Get started and explore the easiest way to use all Mondaysys apps';
 			}
 
-			return 'Hosting platform for Frappe apps';
+			return 'Hosting platform for Mondaysys apps';
 		},
 	},
 };

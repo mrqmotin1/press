@@ -45,7 +45,7 @@ export function getFrappeUpdateBanner(
 
 	return {
 		title:
-			`${subject} runs Frappe Framework code that is ${days} days old. ` +
+			`${subject} runs Mondaysys Framework code that is ${days} days old. ` +
 			'Update to get the latest fixes and security patches.',
 		type: 'warning',
 		button: {

@@ -115,7 +115,7 @@ function onClickSave() {
 					<div class="flex flex-col flex-grow space-y-3">
 						<p class="font-semibold">Enable product warranty</p>
 						<p class="text-ink-gray-6 leading-normal">
-							Get support for issues with Frappe apps, not functional queries
+							Get support for issues with Mondaysys apps, not functional queries
 						</p>
 					</div>
 					<Switch

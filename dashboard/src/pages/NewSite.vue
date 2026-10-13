@@ -50,7 +50,7 @@
 			<div v-if="!bench">
 				<div class="flex items-center justify-between">
 					<h2 class="text-base font-medium leading-6 text-ink-gray-9">
-						Select Frappe Framework Version
+						Select Mondaysys Framework Version
 					</h2>
 				</div>
 				<div class="mt-2">
@@ -289,7 +289,7 @@
 						<lucide-badge-check class="h-4 w-8 text-ink-gray-6" />
 						<span class="ml-4">
 							<strong>Support</strong>
-							covers only issues of Frappe apps and not functional queries. You
+							covers only issues of Mondaysys apps and not functional queries. You
 							can raise a support ticket for Mondaysys Cloud issues for all plans.
 						</span>
 					</div>
@@ -360,7 +360,7 @@
 				<FormControl
 					type="checkbox"
 					v-model="agreedToRegionConsent"
-					:label="`I agree that the laws of the region selected by me (${selectedClusterTitle}) shall stand applicable to me and Frappe.`"
+					:label="`I agree that the laws of the region selected by me (${selectedClusterTitle}) shall stand applicable to me and Mondaysys.`"
 				/>
 				<FormControl
 					class="checkbox"
@@ -1016,7 +1016,7 @@ export default {
 
 			return [
 				{
-					label: 'Frappe Framework Version',
+					label: 'Mondaysys Framework Version',
 					value: this.selectedVersion?.name,
 				},
 				{

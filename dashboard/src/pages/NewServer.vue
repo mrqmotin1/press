@@ -761,7 +761,7 @@
 							type="checkbox"
 							size="sm"
 							variant="subtle"
-							:label="`I agree that the laws of the selected region apply to both me and Frappe.`"
+							:label="`I agree that the laws of the selected region apply to both me and Mondaysys.`"
 							v-model="agreedToRegionConsent"
 						/>
 

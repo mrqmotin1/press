@@ -118,7 +118,7 @@ const submitForm = () => {
 				</div>
 
 				<TextInput
-					placeholder="Search for any Frappe app"
+					placeholder="Search for any Mondaysys app"
 					v-model="searchQuery"
 					:debounce="500"
 				>
@@ -178,7 +178,7 @@ const submitForm = () => {
 					</span>
 
 					<p class="text-ink-gray-5">
-						Support covers only issues of Frappe apps and not functional
+						Support covers only issues of Mondaysys apps and not functional
 						queries. You can raise a support ticket for Mondaysys Cloud issues
 						anytime.
 					</p>

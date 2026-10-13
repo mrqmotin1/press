@@ -129,7 +129,7 @@ const filteredApps = computed(() => {
 			</div>
 
 			<TextInput
-				placeholder="Search for any Frappe app"
+				placeholder="Search for any Mondaysys app"
 				v-model="searchQuery"
 				class="w-[calc(50%-8px)]"
 			>

@@ -45,7 +45,7 @@
 						/>
 						<span>
 							Found <strong>{{ this.app.title }}</strong> ({{ this.app.name }}).
-							We will automatically find the compatible Frappe version for this
+							We will automatically find the compatible Mondaysys version for this
 							app.
 						</span>
 					</div>
