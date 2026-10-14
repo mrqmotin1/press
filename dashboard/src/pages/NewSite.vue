@@ -244,14 +244,6 @@
 					<h2 class="text-base font-medium leading-6 text-ink-gray-9">
 						Select Plan
 					</h2>
-					<div>
-						<Button link="https://frappecloud.com/pricing" variant="ghost">
-							<template #prefix>
-								<lucide-help-circle class="h-4 w-4 text-ink-gray-7" />
-							</template>
-							Help
-						</Button>
-					</div>
 				</div>
 				<div class="mt-2">
 					<SitePlansCards
