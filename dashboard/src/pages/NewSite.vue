@@ -235,6 +235,29 @@
 				</div>
 			</div>
 
+			<!-- MondaySys: choose Shared bench or a private bench for this site only -->
+			<div v-if="!bench && !selectedDedicatedServer && selectedVersion && cluster">
+				<h2 class="text-base font-medium leading-6 text-ink-gray-9">
+					Select Bench
+				</h2>
+				<div class="mt-2 grid grid-cols-2 gap-3">
+					<button
+						v-for="b in benchTypes"
+						:key="b.value"
+						@click="benchType = b.value"
+						:class="[
+							benchType === b.value
+								? 'border-outline-gray-5 ring-1 ring-gray-900 hover:bg-surface-gray-2'
+								: 'bg-surface-white text-ink-gray-9 hover:bg-surface-gray-1',
+							'flex w-full flex-col items-start rounded border p-3 text-left text-base text-ink-gray-9',
+						]"
+					>
+						<span class="text-sm font-medium">{{ b.title }}</span>
+						<span class="mt-1 text-p-sm text-ink-gray-6">{{ b.description }}</span>
+					</button>
+				</div>
+			</div>
+
 			<!-- Hide this block because dedicated server's site plan will be auto-selected internally -->
 			<div
 				v-if="selectedVersion && cluster"
@@ -451,6 +474,21 @@ export default {
 			serverSupportQuotaAvailable: null,
 			spendingLimitExceeded: false,
 			hasUnpaidInvoices: false,
+			benchType: 'shared',
+			benchTypes: [
+				{
+					value: 'shared',
+					title: 'Shared bench',
+					description:
+						'Runs on the shared bench for this version with other sites. Ready in a few minutes. Updates reach it only when you update the site.',
+				},
+				{
+					value: 'private',
+					title: 'Private bench',
+					description:
+						'This site gets its own bench (code, workers, cache), isolated from every other site. The first build takes 20-60 minutes.',
+				},
+			],
 		}
 	},
 	watch: {
@@ -494,6 +532,10 @@ export default {
 			}
 
 			this.cluster = null
+			this.plan = null
+			this.agreedToRegionConsent = false
+		},
+		benchType() {
 			this.plan = null
 			this.agreedToRegionConsent = false
 		},

@@ -19,6 +19,7 @@ export default {
 		'selectedVersion',
 		'selectedProvider',
 		'hideRestrictedPlans',
+		'benchType',
 	],
 	emits: ['update:modelValue'],
 	components: {
@@ -38,6 +39,12 @@ export default {
 
 			if (this.isPrivateBenchSite) {
 				plans = plans.filter((plan) => plan.private_benches);
+			}
+			// MondaySys: New Site "Select Bench" (private = plans that create the site's own bench)
+			if (this.benchType === 'private') {
+				plans = plans.filter((plan) => plan.private_bench_support);
+			} else if (this.benchType === 'shared') {
+				plans = plans.filter((plan) => !plan.private_bench_support);
 			}
 			if (this.isDedicatedServerSite) {
 				plans = plans.filter(
