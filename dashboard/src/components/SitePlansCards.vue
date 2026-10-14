@@ -115,6 +115,10 @@ export default {
 			}
 
 			plans = plans.filter((plan) => !plan.disabled);
+			// MondaySys: $0 staff plans would tie on price; order tiers by CPU allowance (Lite -> Enterprise)
+			plans = [...plans].sort(
+				(a, b) => a.price_usd - b.price_usd || a.cpu_time_per_day - b.cpu_time_per_day,
+			);
 
 			return plans.map((plan) => {
 				return {
