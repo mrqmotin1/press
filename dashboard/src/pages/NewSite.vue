@@ -280,6 +280,7 @@
 					<SitePlansCards
 						v-model="plan"
 						:isPrivateBenchSite="!!bench"
+						:benchType="bench || selectedDedicatedServer ? null : benchType"
 						:isDedicatedServerSite="isDedicatedServerSite"
 						:serverPlanPrice="serverPriceUsd"
 						:serverserverSupportQuotaAvailable="serverSupportQuotaAvailable"
