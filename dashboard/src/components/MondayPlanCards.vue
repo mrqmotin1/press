@@ -120,7 +120,6 @@ export default {
 		},
 		badge(plan) {
 			if (/internal/i.test(plan.name)) return { label: 'Staff only', theme: 'gray' };
-			if (plan.is_trial_plan) return { label: 'Free trial', theme: 'blue' };
 			if (plan.private_bench_support) return { label: 'Own private bench', theme: 'green' };
 			if (plan.bench_versions?.length) return { label: 'Priority bench', theme: 'orange' };
 			if (/business/i.test(plan.name)) return { label: 'Most popular', theme: 'red' };
