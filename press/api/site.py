@@ -959,6 +959,9 @@ def _get_team_dedicated_server_info(for_server: str | None = None):
 		"status": "Active",
 		**({"name": for_server} if for_server else {}),
 	}
+	if not for_server:
+		# MondaySys: the ops team owns the public (shared) servers too; those aren't "your dedicated server"
+		filters["public"] = 0
 
 	servers = frappe.db.get_all(
 		"Server",
