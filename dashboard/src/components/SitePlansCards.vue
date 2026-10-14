@@ -115,9 +115,15 @@ export default {
 			}
 
 			plans = plans.filter((plan) => !plan.disabled);
-			// MondaySys: $0 staff plans would tie on price; order tiers by CPU allowance (Lite -> Enterprise)
+			// MondaySys: $0 staff plans would tie on price. Order: Trial, then tiers by CPU allowance
+			// (Lite -> Business -> Growth -> Enterprise), internal staff plans last.
+			const isInternal = (plan) => /internal/i.test(plan.name);
 			plans = [...plans].sort(
-				(a, b) => a.price_usd - b.price_usd || a.cpu_time_per_day - b.cpu_time_per_day,
+				(a, b) =>
+					isInternal(a) - isInternal(b) ||
+					(b.is_trial_plan || 0) - (a.is_trial_plan || 0) ||
+					a.price_usd - b.price_usd ||
+					a.cpu_time_per_day - b.cpu_time_per_day,
 			);
 
 			return plans.map((plan) => {
