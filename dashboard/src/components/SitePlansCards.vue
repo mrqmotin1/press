@@ -1,9 +1,10 @@
 <template>
-	<PlansCards v-model="currentPlan" :plans="plans" />
+	<MondayPlanCards v-model="currentPlan" :plans="plans" />
 </template>
 
 <script>
 import PlansCards from './PlansCards.vue';
+import MondayPlanCards from './MondayPlanCards.vue';
 import { getPlans } from '../data/plans';
 
 export default {
@@ -24,6 +25,7 @@ export default {
 	emits: ['update:modelValue'],
 	components: {
 		PlansCards,
+		MondayPlanCards,
 	},
 	computed: {
 		currentPlan: {
