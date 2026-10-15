@@ -7,14 +7,30 @@
 		}"
 	>
 		<template #body-content>
-			<BranchAppsSection :site="site" @installed="$emit('installed')" />
+			<!-- MondaySys: one app install at a time per site; buttons stay locked until it finishes -->
+			<div
+				v-if="appJob"
+				class="mb-4 flex items-center gap-2 rounded bg-surface-gray-2 p-3 text-sm text-ink-gray-8"
+			>
+				<lucide-loader class="h-4 w-4 animate-spin" />
+				<span>
+					{{ appJob.app }} is being {{ appJob.uninstall ? 'removed' : 'installed' }} on this site.
+					You can install another app when it finishes.
+				</span>
+			</div>
+			<BranchAppsSection
+				:site="site"
+				:locked="!!appJob"
+				@started="(app) => lock(app)"
+				@installed="$emit('installed')"
+			/>
 			<ObjectList :options="listOptions" />
 		</template>
 	</Dialog>
 </template>
 
 <script>
-import { getCachedDocumentResource } from 'frappe-ui';
+import { call, getCachedDocumentResource } from 'frappe-ui';
 import { defineAsyncComponent, h } from 'vue';
 import { toast } from 'vue-sonner';
 import { renderDialog } from '../../utils/components';
@@ -38,7 +54,29 @@ export default {
 	data() {
 		return {
 			show: true,
+			appJob: null,
+			appJobTimer: null,
 		};
+	},
+	mounted() {
+		this.refreshAppJob();
+		this.appJobTimer = setInterval(this.refreshAppJob, 5000);
+	},
+	beforeUnmount() {
+		clearInterval(this.appJobTimer);
+	},
+	methods: {
+		lock(app) {
+			this.appJob = { app: app || 'An app', uninstall: false };
+		},
+		async refreshAppJob() {
+			try {
+				const job = await call('mondaypos_press.conflicts.get_running_app_job', { site: this.site });
+				if (JSON.stringify(job || null) !== JSON.stringify(this.appJob)) this.appJob = job || null;
+			} catch (e) {
+				// keep the current state; the server-side guard still refuses a second install
+			}
+		},
 	},
 	computed: {
 		$site() {
@@ -46,7 +84,8 @@ export default {
 		},
 		listOptions() {
 			const handleInstall = (row) => {
-				if (this.$site.installApp.loading) return;
+				if (this.$site.installApp.loading || this.appJob) return;
+				this.lock(row.title || row.app_title || row.app);
 
 				if (
 					row.plans &&
@@ -83,7 +122,10 @@ export default {
 											this.show = false;
 											return 'App will be installed shortly';
 										},
-										error: (e) => getToastErrorMessage(e),
+										error: (e) => {
+								this.appJob = null;
+								return getToastErrorMessage(e);
+							},
 									},
 								);
 							},
@@ -108,7 +150,10 @@ export default {
 								this.show = false;
 								return 'App will be installed shortly';
 							},
-							error: (e) => getToastErrorMessage(e),
+							error: (e) => {
+								this.appJob = null;
+								return getToastErrorMessage(e);
+							},
 						},
 					);
 				}
@@ -151,6 +196,7 @@ export default {
 						Button({ row }) {
 							return {
 								label: 'Install',
+								disabled: !!this.appJob,
 								onClick: () => {
 									handleInstall(row);
 								},

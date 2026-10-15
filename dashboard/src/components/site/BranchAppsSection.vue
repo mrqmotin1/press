@@ -29,7 +29,7 @@
 			<Button
 				variant="solid"
 				:loading="busy === row.app"
-				:disabled="isCurrent(row) || !!pending"
+				:disabled="isCurrent(row) || !!pending || locked || !!busy"
 				@click="install(row)"
 			>
 				{{ actionLabel(row) }}
@@ -55,8 +55,8 @@ const API = 'mondaypos_press.branch_install.';
 
 export default {
 	name: 'BranchAppsSection',
-	props: { site: { type: String, required: true } },
-	emits: ['installed'],
+	props: { site: { type: String, required: true }, locked: { type: Boolean, default: false } },
+	emits: ['installed', 'started'],
 	components: { Button },
 	data() {
 		return { rows: [], branches: {}, choice: {}, busy: null, pending: null, status: null, timer: null };
@@ -93,7 +93,9 @@ export default {
 			return this.isCurrent(row) ? 'Installed' : 'Switch branch';
 		},
 		async install(row) {
+			if (this.busy || this.locked) return;
 			this.busy = row.app;
+			this.$emit('started', row.title);
 			try {
 				const res = await call(API + 'install_app_branch', {
 					site: this.site,
