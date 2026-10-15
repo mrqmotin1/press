@@ -165,11 +165,12 @@ export default {
 				label: 'App',
 				fieldname: 'app',
 				fieldtype: 'ListSelection',
+				// MondaySys: apps the plan or installed apps rule out are hidden (mondaypos_press.install_filter)
 				emptyStateMessage:
-					'No apps found' +
+					'No more apps can be installed on this site. Other apps need a different plan, or conflict with an installed app' +
 					(!this.$site.doc?.group_public
-						? '. Please add them from your bench.'
-						: ''),
+						? '. Apps not on this bench can be added from the bench.'
+						: '.'),
 				columns: [
 					{
 						label: 'Title',
