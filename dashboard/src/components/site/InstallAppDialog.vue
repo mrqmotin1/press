@@ -68,10 +68,13 @@ export default {
 	methods: {
 		lock(app) {
 			this.appJob = { app: app || 'An app', uninstall: false };
+			this.lockedAt = Date.now();
 		},
 		async refreshAppJob() {
 			try {
 				const job = await call('mondaypos_press.conflicts.get_running_app_job', { site: this.site });
+				// keep a click's lock until the server has registered the job (or 10 s pass)
+				if (!job && this.appJob && Date.now() - (this.lockedAt || 0) < 10000) return;
 				if (JSON.stringify(job || null) !== JSON.stringify(this.appJob)) this.appJob = job || null;
 			} catch (e) {
 				// keep the current state; the server-side guard still refuses a second install
