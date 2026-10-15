@@ -235,6 +235,12 @@
 				</div>
 			</div>
 
+			<MondayServerChoice
+				v-if="!bench && !selectedDedicatedServer && selectedVersion?.group && cluster"
+				v-model="mondayServer"
+				:cluster="cluster"
+				:group="selectedVersion.group.name"
+			/>
 			<!-- Hide this block because dedicated server's site plan will be auto-selected internally -->
 			<div
 				v-if="selectedVersion && cluster"
@@ -398,6 +404,7 @@ import Header from '../components/Header.vue'
 import SitePlansCards from '../components/SitePlansCards.vue'
 import Summary from '../components/Summary.vue'
 import NewSiteAppSelector from '../components/site/NewSiteAppSelector.vue'
+import MondayServerChoice from '../components/MondayServerChoice.vue'
 import { plans } from '../data/plans'
 import router from '../router'
 import { getCountry } from '../utils/country'
@@ -410,6 +417,7 @@ export default {
 	components: {
 		FBreadcrumbs: Breadcrumbs,
 		NewSiteAppSelector,
+		MondayServerChoice,
 		SitePlansCards,
 		Autocomplete,
 		ErrorMessage,
@@ -443,6 +451,7 @@ export default {
 			serverSupportQuotaAvailable: null,
 			spendingLimitExceeded: false,
 			hasUnpaidInvoices: false,
+			mondayServer: null,
 		}
 	},
 	watch: {
@@ -660,6 +669,8 @@ export default {
 								selected_app_plans: appPlans,
 								domain: this.domain,
 								server: this.selectedDedicatedServer || null,
+								// MondaySys: staff's explicit server choice (mondaypos_press.server_choice)
+								mondaypos_server: this.mondayServer || null,
 								// files: this.selectedFiles,
 								// skip_failing_patches: this.skipFailingPatches,
 							},

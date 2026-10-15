@@ -97,6 +97,11 @@
 					</div>
 				</div>
 			</div>
+			<MondayServerChoice
+				v-if="benchVersion && benchRegion && !server"
+				v-model="mondayServer"
+				:cluster="benchRegion"
+			/>
 			<div v-if="benchVersion && (benchRegion || server)" class="flex flex-col">
 				<h2 class="text-sm font-medium leading-6 text-ink-gray-9">
 					Enter Bench Title
@@ -145,7 +150,7 @@
 								cluster: benchRegion,
 								saas_app: null,
 								apps: getAppsToInstall(),
-								server: server || null,
+								server: server || mondayServer || null,
 							},
 						})
 					"
@@ -158,6 +163,7 @@
 	</div>
 </template>
 <script>
+import MondayServerChoice from '../components/MondayServerChoice.vue';
 import { Badge } from 'frappe-ui';
 import Header from '../components/Header.vue';
 import ObjectList from '../components/ObjectList.vue';
@@ -167,6 +173,7 @@ import { DashboardError } from '../utils/error';
 export default {
 	name: 'NewReleaseGroup',
 	components: {
+		MondayServerChoice,
 		Summary,
 		Header,
 		ObjectList,
@@ -174,6 +181,7 @@ export default {
 	props: ['server'],
 	data() {
 		return {
+			mondayServer: null,
 			benchTitle: '',
 			benchVersion: '',
 			benchRegion: '',
