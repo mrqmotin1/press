@@ -1047,9 +1047,14 @@ export default {
 				icon: icon('zap'),
 				route: 'mona-ai',
 				type: 'Component',
-				condition: (site) =>
-					site.doc?.status !== 'Archived' &&
-					(site.doc?.installed_apps || []).some((a) => ['crm', 'mondaysys_ai'].includes(a)),
+				// called as {documentResource} by DetailPage and as {doc} by TabsWithRouter
+				condition: (site) => {
+					const doc = site.doc || site.documentResource?.doc;
+					return (
+						doc?.status !== 'Archived' &&
+						(doc?.installed_apps || []).some((a) => ['crm', 'mondaysys_ai'].includes(a))
+					);
+				},
 				component: defineAsyncComponent(
 					() => import('../components/MondaySiteAI.vue'),
 				),
