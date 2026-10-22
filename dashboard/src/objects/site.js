@@ -1042,6 +1042,22 @@ export default {
 				},
 			},
 			{
+				// MondaySys: Mona AI on/off (staff) and usage, on sites with Monday CRM (MondaySiteAI.vue)
+				label: 'Mona AI',
+				icon: icon('zap'),
+				route: 'mona-ai',
+				type: 'Component',
+				condition: (site) =>
+					site.doc?.status !== 'Archived' &&
+					(site.doc?.apps || []).some((a) => ['crm', 'mondaysys_ai'].includes(a.app)),
+				component: defineAsyncComponent(
+					() => import('../components/MondaySiteAI.vue'),
+				),
+				props: (site) => {
+					return { site: site.doc?.name }
+				},
+			},
+			{
 				label: 'Actions',
 				icon: icon('sliders'),
 				route: 'actions',
