@@ -418,6 +418,7 @@ class Site(Document, TagHelpers):
 		)
 		doc.frappe_updated_on = get_frappe_release_timestamp(self.bench)
 		doc.owner_email = frappe.db.get_value("Team", self.team, "user")
+		doc.installed_apps = [row.app for row in self.apps]  # MondaySys: site tabs shown per app (Mona AI)
 		doc.current_plan = get("Site Plan", self.plan) if self.plan else None
 		doc.can_schedule_backups = self.plan_allows_backup_schedule()
 		doc.last_updated = self.last_updated

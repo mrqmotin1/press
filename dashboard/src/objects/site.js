@@ -1049,7 +1049,7 @@ export default {
 				type: 'Component',
 				condition: (site) =>
 					site.doc?.status !== 'Archived' &&
-					(site.doc?.apps || []).some((a) => ['crm', 'mondaysys_ai'].includes(a.app)),
+					(site.doc?.installed_apps || []).some((a) => ['crm', 'mondaysys_ai'].includes(a)),
 				component: defineAsyncComponent(
 					() => import('../components/MondaySiteAI.vue'),
 				),
