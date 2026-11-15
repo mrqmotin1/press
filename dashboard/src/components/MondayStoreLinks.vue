@@ -1,7 +1,7 @@
 <template>
 	<!-- MondaySys: Visit shop · Store admin (one-click, signed link) · ERPNext (Login as Administrator). Staff only. -->
 	<div class="flex flex-wrap justify-end gap-1.5">
-		<Button size="sm" variant="subtle" :link="`https://${store.address}`">
+		<Button size="sm" variant="subtle" :link="`https://${shopHost}`">
 			<template #prefix><LucideExternalLink class="h-3.5 w-3.5" /></template>
 			Shop
 		</Button>
@@ -25,6 +25,12 @@ export default {
 	name: 'MondayStoreLinks',
 	components: { Button },
 	props: { store: { type: Object, required: true } },
+	computed: {
+		// a live custom domain is the shop's main address (the store admin stays on <slug>-shop)
+		shopHost() {
+			return this.store.custom_domain_status === 'Active' ? this.store.custom_domain : this.store.address;
+		},
+	},
 	resources: {
 		admin() {
 			return { url: 'press.api.mondaypos_storefront.open_admin', onError: (e) => toast.error(getToastErrorMessage(e)) };

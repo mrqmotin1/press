@@ -96,6 +96,57 @@
 				</div>
 			</section>
 
+			<!-- custom domain -->
+			<section v-if="['Preview', 'On', 'Paused'].includes(d.state) || d.custom_domain" class="rounded border border-outline-gray-1 p-4">
+				<div class="flex flex-wrap items-start justify-between gap-3">
+					<div>
+						<h3 class="text-base font-semibold text-ink-gray-9">Custom domain</h3>
+						<p class="mt-1 text-p-sm text-ink-gray-5">The shop on the client's own address, e.g. shop.clientbrand.com. HTTPS is set up automatically.</p>
+					</div>
+					<Badge v-if="dom?.domain" :label="dom.status" :theme="{ Active: 'green', Problem: 'red', Removing: 'gray' }[dom.status] || 'orange'" />
+				</div>
+
+				<div v-if="!dom?.domain" class="mt-4 flex flex-wrap items-end gap-2">
+					<FormControl class="w-72" label="Domain" v-model="newDomain" placeholder="shop.clientbrand.com" autocomplete="off" />
+					<Button variant="solid" :disabled="!newDomain.trim()" :loading="$resources.addDomain.loading" @click="addDomain">Add domain</Button>
+					<p class="w-full text-sm text-ink-gray-5">
+						Use a subdomain (shop. or www.): most domain providers can't point a bare domain (clientbrand.com) at us.
+					</p>
+				</div>
+
+				<div v-else class="mt-4 space-y-3">
+					<template v-if="['Waiting for DNS', 'Waiting for certificate', 'Problem'].includes(dom.status)">
+						<p class="text-p-sm text-ink-gray-8">Send the client this record to add at their domain provider (DNS settings):</p>
+						<table class="w-full text-left text-sm">
+							<thead class="text-ink-gray-5"><tr><th class="pb-1 font-medium">Type</th><th class="pb-1 font-medium">Name</th><th class="pb-1 font-medium">Points to</th></tr></thead>
+							<tbody class="font-mono text-ink-gray-9">
+								<tr v-for="r in dom.records" :key="r.name"><td class="pr-4">{{ r.type }}</td><td class="pr-4">{{ r.name }}</td><td>{{ r.value }}</td></tr>
+							</tbody>
+						</table>
+						<p v-if="dom.prevalidation" class="text-sm text-ink-gray-5">
+							If that domain still runs another website the client can't switch yet, they can add this record first so the
+							certificate is ready before the switch:
+							<span class="font-mono text-ink-gray-8">{{ dom.prevalidation.type }} {{ dom.prevalidation.name }} = {{ dom.prevalidation.value }}</span>
+						</p>
+						<p v-if="dom.cloudflare" class="text-sm text-ink-gray-5">
+							Cloudflare: domain {{ dom.cloudflare.hostname }}, certificate {{ dom.cloudflare.certificate }}.
+							<span v-if="dom.cloudflare.errors?.length" class="text-ink-amber-3">{{ dom.cloudflare.errors.join(' ') }}</span>
+							It switches on by itself within a few minutes of the record being right.
+						</p>
+					</template>
+					<p v-else-if="dom.status === 'Active'" class="text-p-sm text-ink-gray-8">
+						Live at <a :href="`https://${dom.domain}`" target="_blank" class="font-medium underline">https://{{ dom.domain }}</a>.
+						{{ d.address }} forwards shoppers there; the store admin stays at {{ d.address }}/admin.
+					</p>
+					<p v-else class="text-p-sm text-ink-gray-7">{{ dom.status }}…</p>
+					<p v-if="dom.note" class="text-sm text-ink-amber-3">{{ dom.note }}</p>
+					<div class="flex gap-2">
+						<Button v-if="['Waiting for DNS', 'Waiting for certificate', 'Active'].includes(dom.status)" variant="subtle" :loading="$resources.domain.loading" @click="checkDomain">Check now</Button>
+						<Button v-if="!['Removing', 'Activating'].includes(dom.status)" variant="subtle" theme="red" @click="removeDomain">Remove domain</Button>
+					</div>
+				</div>
+			</section>
+
 			<!-- payments -->
 			<section v-if="d.state !== 'Creating'" class="rounded border border-outline-gray-1 p-4">
 				<h3 class="text-base font-semibold text-ink-gray-9">Payments</h3>
@@ -178,13 +229,18 @@ export default {
 	components: { Badge, Breadcrumbs, Button, Dialog, FormControl, Header, LoadingIndicator, StoreLinks, Switch, Tooltip },
 	props: { name: { type: String, required: true } },
 	data() {
-		return { keysDialog: false, keys: { mode: 'Sandbox', store_id: '', password: '' }, showPassword: false, timer: null };
+		return { keysDialog: false, keys: { mode: 'Sandbox', store_id: '', password: '' }, showPassword: false, timer: null, domainTimer: null, newDomain: '' };
 	},
 	mounted() {
 		// a running job (set-up, disable, enable) is watched from mounted: a watch option would run before $resources exists
 		this.$watch('jobRunning', (on) => {
 			clearInterval(this.timer);
 			if (on) this.timer = setInterval(() => this.$resources.store.reload(), 4000);
+		}, { immediate: true });
+		// a domain waiting for the client's DNS or Cloudflare's certificate: look again every 30 s
+		this.$watch('domainWaiting', (on) => {
+			clearInterval(this.domainTimer);
+			if (on) this.domainTimer = setInterval(() => this.$resources.domain.submit({ name: this.name, check: 1 }), 30000);
 		}, { immediate: true });
 		// e.g. Creating → Preview when the set-up job finishes: the ERPNext part is there now
 		this.$watch('d.state', (state, before) => {
@@ -193,6 +249,7 @@ export default {
 	},
 	beforeUnmount() {
 		clearInterval(this.timer);
+		clearInterval(this.domainTimer);
 	},
 	resources: {
 		store() {
@@ -201,6 +258,29 @@ export default {
 		// the shop's ERPNext part (payments, checklist) loads after the page itself: one call to the site
 		erp() {
 			return { url: 'press.api.mondaypos_storefront.store_erp', params: { name: this.name }, auto: true };
+		},
+		domain() {
+			return { url: 'press.api.mondaypos_storefront.domain', params: { name: this.name, check: 0 }, auto: true };
+		},
+		addDomain() {
+			return {
+				url: 'press.api.mondaypos_storefront.add_domain',
+				onSuccess: (data) => {
+					this.newDomain = '';
+					this.$resources.domain.setData(data);
+					toast.success('Domain added. Send the client the record below.');
+				},
+				onError: (e) => toast.error(getToastErrorMessage(e)),
+			};
+		},
+		removeDomainCall() {
+			return {
+				url: 'press.api.mondaypos_storefront.remove_domain',
+				onSuccess: () => {
+					this.$resources.domain.reload();
+					this.$resources.store.reload();
+				},
+			};
 		},
 		setPayments() {
 			return {
@@ -281,6 +361,12 @@ export default {
 				{ ok: r.delivery_slots > 0, label: `Delivery slots: ${r.delivery_slots ?? 0}` },
 				{ ok: r.cod || r.online, label: `Payment: ${[r.cod && 'cash on delivery', r.online && 'SSLCommerz'].filter(Boolean).join(', ') || 'none on'}` },
 			];
+		},
+		dom() {
+			return this.$resources.domain.data;
+		},
+		domainWaiting() {
+			return ['Waiting for DNS', 'Waiting for certificate', 'Activating', 'Removing'].includes(this.dom?.status);
 		},
 		jobRunning() {
 			return ['Queued', 'Running'].includes(this.d?.job?.status);
@@ -370,6 +456,21 @@ export default {
 		},
 		newPassword() {
 			this.$resources.newPassword.submit({ name: this.name });
+		},
+		addDomain() {
+			this.$resources.addDomain.submit({ name: this.name, domain: this.newDomain.trim() });
+		},
+		checkDomain() {
+			this.$resources.domain.submit({ name: this.name, check: 1 });
+		},
+		removeDomain() {
+			this.confirm(
+				'Remove custom domain',
+				`Remove <strong>${escapeHtml(this.dom.domain)}</strong> from ${escapeHtml(this.d.title)}?<br><br>The shop goes back to ${escapeHtml(this.d.address)} and payments return there. The client can then delete their DNS record.`,
+				'Remove',
+				'red',
+				() => this.$resources.removeDomainCall.submit({ name: this.name }),
+			);
 		},
 		copyPassword() {
 			navigator.clipboard.writeText(this.d.preview_password).then(() => toast.success('Copied'));
