@@ -83,6 +83,7 @@
 				</div>
 
 				<!-- go-live checklist -->
+				<p v-if="d.state === 'Preview' && !r" class="mt-4 border-t border-outline-gray-1 pt-4 text-sm text-ink-gray-5">Checking the shop's ERPNext…</p>
 				<div v-if="d.state === 'Preview' && r" class="mt-4 border-t border-outline-gray-1 pt-4">
 					<div class="text-sm font-medium text-ink-gray-8">Before going live (in the shop's ERPNext)</div>
 					<ul class="mt-2 space-y-1.5 text-base">
@@ -101,7 +102,8 @@
 				<p class="mt-1 text-p-sm text-ink-gray-5">
 					What shoppers can pay with at checkout. Saved in the shop's own ERPNext (Storefront Settings).
 				</p>
-				<p v-if="d.payments_error" class="mt-3 text-p-base text-ink-red-4">Could not read the shop's settings: {{ d.payments_error }}</p>
+				<p v-if="$resources.erp.data?.error" class="mt-3 text-p-base text-ink-red-4">Could not read the shop's settings: {{ $resources.erp.data.error }}</p>
+				<p v-else-if="!$resources.erp.data" class="mt-3 text-p-base text-ink-gray-5">Reading the shop's ERPNext…</p>
 				<p v-else-if="!p" class="mt-3 text-p-base text-ink-gray-5">This store has no linked ERPNext site.</p>
 
 				<div v-else class="mt-4 divide-y divide-outline-gray-1">
@@ -184,6 +186,10 @@ export default {
 			clearInterval(this.timer);
 			if (on) this.timer = setInterval(() => this.$resources.store.reload(), 4000);
 		}, { immediate: true });
+		// e.g. Creating → Preview when the set-up job finishes: the ERPNext part is there now
+		this.$watch('d.state', (state, before) => {
+			if (before && state !== before) this.$resources.erp.reload();
+		});
 	},
 	beforeUnmount() {
 		clearInterval(this.timer);
@@ -192,12 +198,16 @@ export default {
 		store() {
 			return { url: 'press.api.mondaypos_storefront.store', params: { name: this.name }, auto: true };
 		},
+		// the shop's ERPNext part (payments, checklist) loads after the page itself: one call to the site
+		erp() {
+			return { url: 'press.api.mondaypos_storefront.store_erp', params: { name: this.name }, auto: true };
+		},
 		setPayments() {
 			return {
 				url: 'press.api.mondaypos_storefront.set_payments',
-				onSuccess: () => {
+				onSuccess: (data) => {
 					toast.success('Payment methods updated');
-					this.$resources.store.reload();
+					this.$resources.erp.setData(data);
 				},
 				onError: (e) => toast.error(getToastErrorMessage(e)),
 			};
@@ -205,7 +215,7 @@ export default {
 		setState() {
 			return {
 				url: 'press.api.mondaypos_storefront.set_state',
-				onSuccess: () => this.$resources.store.reload(),
+				onSuccess: (data) => this.$resources.store.setData(data),
 			};
 		},
 		action() {
@@ -235,10 +245,11 @@ export default {
 		saveKeys() {
 			return {
 				url: 'press.api.mondaypos_storefront.save_sslcommerz',
-				onSuccess: () => {
+				onSuccess: (data) => {
 					this.keysDialog = false;
 					this.keys.password = '';
 					toast.success('Keys passed the test and are saved');
+					this.$resources.erp.setData(data);
 					this.$resources.store.reload();
 				},
 				onError: (e) => toast.error(getToastErrorMessage(e)),
@@ -250,13 +261,13 @@ export default {
 			return this.$resources.store.data;
 		},
 		p() {
-			return this.d?.payments;
+			return this.$resources.erp.data?.payments;
 		},
 		saving() {
 			return this.$resources.setPayments.loading;
 		},
 		r() {
-			return this.d?.readiness;
+			return this.$resources.erp.data?.readiness;
 		},
 		missing() {
 			return this.r?.missing || (this.d?.state === 'Preview' ? ['readiness unknown'] : []);
