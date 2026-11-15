@@ -93,6 +93,16 @@ const list = computed(() => {
 			disabled: enforce2FA,
 		},
 
+		// MondaySys: Online Stores (staff only; the API refuses others too)
+		{
+			name: 'Online Stores',
+			icon: LucideStore,
+			route: '/online-stores',
+			isActive: routeName.startsWith('Online Store'),
+			condition: Boolean($team.doc.is_desk_user),
+			disabled: enforce2FA,
+		},
+
 		{
 			name: 'Dev Tools',
 			icon: LucideCode,

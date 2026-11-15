@@ -567,6 +567,27 @@ let router = createRouter({
 			props: true,
 			meta: { title: 'Log Browser' },
 		},
+		// MondaySys: Online Stores (staff; mondaypos_press storefront/api.py)
+		{
+			path: '/online-stores',
+			name: 'Online Stores',
+			component: () => import('./pages/MondayOnlineStores.vue'),
+			meta: { title: 'Online Stores' },
+		},
+		{
+			path: '/online-stores/servers/:name',
+			name: 'Online Store Server',
+			component: () => import('./pages/MondayStorefrontServer.vue'),
+			props: true,
+			meta: { title: 'Storefront Server' },
+		},
+		{
+			path: '/online-stores/stores/:name',
+			name: 'Online Store',
+			component: () => import('./pages/MondayStorefrontStore.vue'),
+			props: true,
+			meta: { title: 'Online Store' },
+		},
 		...generateRoutes(),
 		// TODO: makeshift redirect fixes for /insights paths
 		{
