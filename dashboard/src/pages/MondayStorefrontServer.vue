@@ -180,22 +180,24 @@ export default {
 		},
 	},
 	computed: {
-		// $resources is set up after computed/watch init, and the `running` watcher is immediate
 		d() {
-			return this.$resources?.server?.data;
+			return this.$resources.server.data;
 		},
 		running() {
 			return (this.d?.jobs || []).some((j) => ['Queued', 'Running'].includes(j.status));
 		},
 	},
-	watch: {
-		running: {
-			immediate: true,
-			handler(on) {
+	// watched from mounted: a `watch:` option runs before frappe-ui sets up $resources (in created), and its
+	// $resources computed would then stay cached as undefined
+	mounted() {
+		this.$watch(
+			'running',
+			(on) => {
 				clearInterval(this.timer);
 				if (on) this.timer = setInterval(() => this.$resources.server.reload(), 5000);
 			},
-		},
+			{ immediate: true },
+		);
 	},
 	unmounted() {
 		clearInterval(this.timer);
