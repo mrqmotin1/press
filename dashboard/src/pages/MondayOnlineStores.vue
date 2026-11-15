@@ -100,7 +100,6 @@
 <script>
 import { Badge, Breadcrumbs, Button } from 'frappe-ui';
 import Header from '../components/Header.vue';
-import { serverTime } from '../utils/mondayTime';
 import StoreLinks from '../components/MondayStoreLinks.vue';
 
 export default {
@@ -127,7 +126,7 @@ export default {
 			return { On: 'green', Preview: 'blue', Paused: 'orange', Disabled: 'gray' }[state] || 'gray';
 		},
 		ago(ts) {
-			return serverTime(ts).fromNow();
+			return this.$dayjs(ts).fromNow();
 		},
 	},
 };

@@ -17,24 +17,27 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(advancedFormat);
 
+// MondaySys: our Press runs in Asia/Dhaka (System Settings time zone); upstream assumes Asia/Calcutta.
+export const SERVER_TIMEZONE = 'Asia/Dhaka';
+
 export function dayjsLocal(dateTimeString) {
 	let localTimezone = dayjs.tz.guess();
-	// dates are stored in Asia/Calcutta timezone on the server
-	return dayjs.tz(dateTimeString, 'Asia/Calcutta').tz(localTimezone);
+	// dates are stored in the server's timezone
+	return dayjs.tz(dateTimeString, SERVER_TIMEZONE).tz(localTimezone);
 }
 
 export function dayjsIST(dateTimeString) {
-	return dayjs(dateTimeString).tz('Asia/Calcutta');
+	return dayjs(dateTimeString).tz(SERVER_TIMEZONE);
 }
 
 // Times of day (HH:mm) with no date of their own. Anchoring them to today keeps
 // the offset right for timezones that observe DST.
 export function timeLocal(serverTime) {
-	return convertTimeOfDay(serverTime, 'Asia/Calcutta', dayjs.tz.guess());
+	return convertTimeOfDay(serverTime, SERVER_TIMEZONE, dayjs.tz.guess());
 }
 
 export function timeServer(localTime) {
-	return convertTimeOfDay(localTime, dayjs.tz.guess(), 'Asia/Calcutta');
+	return convertTimeOfDay(localTime, dayjs.tz.guess(), SERVER_TIMEZONE);
 }
 
 function convertTimeOfDay(time, from, to) {

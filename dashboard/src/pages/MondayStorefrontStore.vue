@@ -105,7 +105,6 @@
 import { Badge, Breadcrumbs, Button, Dialog, FormControl, Switch, Tooltip } from 'frappe-ui';
 import { toast } from 'vue-sonner';
 import Header from '../components/Header.vue';
-import { serverTime } from '../utils/mondayTime';
 import StoreLinks from '../components/MondayStoreLinks.vue';
 import { getToastErrorMessage } from '../utils/toast';
 
@@ -154,7 +153,7 @@ export default {
 			return this.$resources.setPayments.loading;
 		},
 		testedAgo() {
-			return this.d?.sslcommerz_tested_on ? serverTime(this.d.sslcommerz_tested_on).fromNow() : '';
+			return this.d?.sslcommerz_tested_on ? this.$dayjs(this.d.sslcommerz_tested_on).fromNow() : '';
 		},
 		sslBlocker() {
 			if (!this.p) return '';
