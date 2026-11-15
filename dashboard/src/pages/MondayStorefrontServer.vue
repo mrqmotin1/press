@@ -180,8 +180,9 @@ export default {
 		},
 	},
 	computed: {
+		// $resources is set up after computed/watch init, and the `running` watcher is immediate
 		d() {
-			return this.$resources.server.data;
+			return this.$resources?.server?.data;
 		},
 		running() {
 			return (this.d?.jobs || []).some((j) => ['Queued', 'Running'].includes(j.status));
