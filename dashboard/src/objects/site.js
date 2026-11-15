@@ -1063,6 +1063,27 @@ export default {
 				},
 			},
 			{
+				// MondaySys: Online Store for this site (staff switch it on; the team sees its state). MondaySiteStore.vue
+				label: 'Online Store',
+				icon: icon('shopping-bag'),
+				route: 'online-store',
+				type: 'Component',
+				condition: (site) => {
+					const doc = site.doc || site.documentResource?.doc;
+					return (
+						doc?.status !== 'Archived' &&
+						(Boolean(getTeam()?.doc?.is_desk_user) ||
+							(doc?.installed_apps || []).includes('mondaypos_storefront'))
+					);
+				},
+				component: defineAsyncComponent(
+					() => import('../components/MondaySiteStore.vue'),
+				),
+				props: (site) => {
+					return { site: site.doc?.name }
+				},
+			},
+			{
 				label: 'Actions',
 				icon: icon('sliders'),
 				route: 'actions',

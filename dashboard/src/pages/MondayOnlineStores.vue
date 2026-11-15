@@ -3,11 +3,18 @@
 	<div class="flex flex-col">
 		<Header class="bg-surface-white">
 			<Breadcrumbs :items="[{ label: 'Online Stores', route: { name: 'Online Stores' } }]" />
-			<Button variant="subtle" :loading="$resources.overview.loading" @click="$resources.overview.reload()">
-				<template #prefix><LucideRefreshCw class="h-4 w-4" /></template>
-				Refresh
-			</Button>
+			<div class="flex gap-2">
+				<Button variant="subtle" :loading="$resources.overview.loading" @click="$resources.overview.reload()">
+					<template #prefix><LucideRefreshCw class="h-4 w-4" /></template>
+					Refresh
+				</Button>
+				<Button variant="solid" @click="newStore = true">
+					<template #prefix><LucidePlus class="h-4 w-4" /></template>
+					New store
+				</Button>
+			</div>
 		</Header>
+		<NewStoreDialog v-if="newStore" v-model="newStore" @created="(name) => $router.push({ name: 'Online Store', params: { name } })" />
 
 		<div class="mx-auto w-full max-w-6xl space-y-6 p-5">
 			<p v-if="$resources.overview.error" class="text-p-base text-ink-red-4">
@@ -100,13 +107,14 @@
 <script>
 import { Badge, Breadcrumbs, Button } from 'frappe-ui';
 import Header from '../components/Header.vue';
+import NewStoreDialog from '../components/MondayNewStoreDialog.vue';
 import StoreLinks from '../components/MondayStoreLinks.vue';
 
 export default {
 	name: 'MondayOnlineStores',
-	components: { Badge, Breadcrumbs, Button, Header, StoreLinks },
+	components: { Badge, Breadcrumbs, Button, Header, NewStoreDialog, StoreLinks },
 	data() {
-		return { tab: 'Stores' };
+		return { tab: 'Stores', newStore: false };
 	},
 	resources: {
 		overview() {
@@ -123,7 +131,7 @@ export default {
 	},
 	methods: {
 		stateTheme(state) {
-			return { On: 'green', Preview: 'blue', Paused: 'orange', Disabled: 'gray' }[state] || 'gray';
+			return { Creating: 'blue', On: 'green', Preview: 'blue', Paused: 'orange', Disabled: 'gray' }[state] || 'gray';
 		},
 		ago(ts) {
 			return this.$dayjs(ts).fromNow();
