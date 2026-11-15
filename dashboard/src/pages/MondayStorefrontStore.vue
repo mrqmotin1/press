@@ -69,7 +69,7 @@
 						<div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-ink-gray-7">
 							<span>Store ID: <span class="font-mono">{{ p.store_id || 'not set' }}</span></span>
 							<span>Password: {{ p.password_saved ? 'saved' : 'not set' }}</span>
-							<span v-if="d.sslcommerz_tested_on">Keys tested {{ $dayjs(d.sslcommerz_tested_on).fromNow() }} by {{ d.sslcommerz_saved_by }}</span>
+							<span v-if="d.sslcommerz_tested_on">Keys tested {{ testedAgo }} by {{ d.sslcommerz_saved_by }}</span>
 						</div>
 						<p v-if="sslBlocker && !p.sslcommerz" class="mt-1 text-sm text-ink-amber-3">{{ sslBlocker }}</p>
 						<Button class="mt-3" variant="subtle" @click="openKeys">{{ p.store_id ? 'Replace keys' : 'Add keys' }}</Button>
@@ -105,6 +105,7 @@
 import { Badge, Breadcrumbs, Button, Dialog, FormControl, Switch, Tooltip } from 'frappe-ui';
 import { toast } from 'vue-sonner';
 import Header from '../components/Header.vue';
+import { serverTime } from '../utils/mondayTime';
 import StoreLinks from '../components/MondayStoreLinks.vue';
 import { getToastErrorMessage } from '../utils/toast';
 
@@ -151,6 +152,9 @@ export default {
 		},
 		saving() {
 			return this.$resources.setPayments.loading;
+		},
+		testedAgo() {
+			return this.d?.sslcommerz_tested_on ? serverTime(this.d.sslcommerz_tested_on).fromNow() : '';
 		},
 		sslBlocker() {
 			if (!this.p) return '';

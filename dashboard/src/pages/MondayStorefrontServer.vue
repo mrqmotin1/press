@@ -68,7 +68,7 @@
 							class="flex items-center justify-between border-b border-outline-gray-1 px-3 py-2 text-sm last:border-0"
 						>
 							<span>
-								<span class="font-medium text-ink-gray-9">{{ $dayjs(b.started).format('D MMM, HH:mm') }}</span>
+								<span class="font-medium text-ink-gray-9">{{ time(b.started).format('D MMM, HH:mm') }}</span>
 								<span class="text-ink-gray-5"> · {{ b.kind }} · {{ size(b.size_bytes) }}</span>
 								<span v-if="b.error" class="block text-ink-red-4">{{ b.error }}</span>
 							</span>
@@ -123,7 +123,7 @@
 		<Dialog :modelValue="Boolean(restoreTarget)" @update:modelValue="restoreTarget = null" :options="{ title: 'Restore this backup?' }">
 			<template #body-content>
 				<p v-if="restoreTarget" class="text-p-base text-ink-gray-7">
-					Every store on {{ name }} goes back to {{ $dayjs(restoreTarget.started).format('D MMM YYYY, HH:mm') }}.
+					Every store on {{ name }} goes back to {{ time(restoreTarget.started).format('D MMM YYYY, HH:mm') }}.
 					Design, pages and menus changed since then are lost; orders are safe in each shop's ERPNext.
 					A backup of the current state is taken first, and the shops pause for a few seconds.
 				</p>
@@ -149,6 +149,7 @@
 import { Badge, Breadcrumbs, Button, Dialog, FormControl } from 'frappe-ui';
 import { toast } from 'vue-sonner';
 import Header from '../components/Header.vue';
+import { serverTime } from '../utils/mondayTime';
 import { getToastErrorMessage } from '../utils/toast';
 
 export default {
@@ -251,7 +252,10 @@ export default {
 			return { Success: 'green', Failed: 'red', Running: 'blue', Queued: 'blue', Expired: 'gray' }[s] || 'gray';
 		},
 		ago(ts) {
-			return ts ? this.$dayjs(ts).fromNow() : 'never';
+			return ts ? serverTime(ts).fromNow() : 'never';
+		},
+		time(ts) {
+			return serverTime(ts);
 		},
 		size(b) {
 			if (!b) return '—';
